@@ -1,0 +1,9 @@
+eclipse.preferences.version=1
+encoding//src/deploy_handler.py=UTF8
+encoding//src/github_handler.py=UTF8
+encoding//src/logger.py=UTF-8
+encoding//src/projects_handler.py=UTF8
+encoding//src/registry_handler.py=UTF8
+encoding//src/status_handler.py=UTF8
+encoding//src/utils.py=UTF8
+encoding//src/web_server.py=UTF8
