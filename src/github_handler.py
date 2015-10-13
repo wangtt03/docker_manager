@@ -18,7 +18,7 @@ class GitHubHandler(tornado.web.RequestHandler):
         body = json.loads(self.request.body.decode())
         repo = body['repository']['name']
         url = body['repository']['git_url']
-        user = body['repository']['owner']['login']
+        user = body['repository']['owner']['name']
         date = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
         path = ROOT + '/' + repo + date
         tag = mongo_helper.get_image_version(user, repo)
