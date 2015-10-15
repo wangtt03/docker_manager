@@ -36,16 +36,39 @@ def start_build(context):
     tag = context['tag']
     str_tag = '.'.join(str(tag))
     
-    utils.run_command(config.config['config_server'], 'mkdir ' + path)
-    utils.run_command(config.config['config_server'], 'cd ' + path + " && " + 'git clone ' + url)
-    utils.run_command(config.config['config_server'], 'cd ' + path + "/" + repo + " && " \
-                      + 'sudo docker build -t vophoto-test.chinacloudapp.cn:5000/' + user + "/" + repo + ":" + str_tag + " .")
-    utils.run_command(config.config['config_server'], 'sudo docker push vophoto-test.chinacloudapp.cn:5000/' + user + "/" + repo + ":" + str_tag)
-    utils.run_command(config.config['config_server'], 'sudo rm -fr ' + path)
+    cmd = 'mkdir ' + path + ' && ' + \
+        'cd ' + path + ' && ' + \
+        'git clone ' + url + ' && ' + \
+        'cd ' + repo + ' && ' + \
+        'sudo docker build -t vophoto-test.chinacloudapp.cn:5000/' + user + "/" + repo + ":" + str_tag + " ." + ' && ' + \
+        'sudo docker push vophoto-test.chinacloudapp.cn:5000/' + user + "/" + repo + ":" + str_tag + ' && ' + \
+        'sudo rm -fr ' + path
+    
+    utils.run_command(config.config['config_server'], cmd)
+#     utils.run_command(config.config['config_server'], 'cd ' + path + " && " + 'git clone ' + url)
+#     utils.run_command(config.config['config_server'], 'cd ' + path + "/" + repo + " && " \
+#                       + 'sudo docker build -t vophoto-test.chinacloudapp.cn:5000/' + user + "/" + repo + ":" + str_tag + " .")
+#     utils.run_command(config.config['config_server'], 'sudo docker push vophoto-test.chinacloudapp.cn:5000/' + user + "/" + repo + ":" + str_tag)
+#     utils.run_command(config.config['config_server'], 'sudo rm -fr ' + path)
+    
     image = {'user': user, 'name': repo, 'version': tag}
     mongo_helper.save_my_images(image)
 
 if __name__ == "__main__":
-    context = {}
-    t = threading.Thread(target=start_build, args=(context,))
-    t.start()
+    context = {'path': 'path', 'url': 'url', 'repo': 'repo', 'user': 'user', 'tag': '100'}
+    path = context['path']
+    url = context['url']
+    repo = context['repo']
+    user = context['user']
+    tag = context['tag']
+    str_tag = '.'.join(str(tag))
+    
+    cmd = 'mkdir ' + path + ' && ' + \
+        'cd ' + path + ' && ' + \
+        'git clone ' + url + ' && ' + \
+        'cd ' + repo + ' && ' + \
+        'sudo docker build -t vophoto-test.chinacloudapp.cn:5000/' + user + "/" + repo + ":" + str_tag + " ." + ' && ' + \
+        'sudo docker push vophoto-test.chinacloudapp.cn:5000/' + user + "/" + repo + ":" + str_tag + ' && ' + \
+        'sudo rm -fr ' + path
+        
+    print(cmd)
