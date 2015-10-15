@@ -8,12 +8,18 @@ import utils
 
 class VMHandler(tornado.web.RequestHandler):
     def get(self):
-        vms = utils.list_vm()
-        output = [k for k in vms if k['OSDisk']['operatingSystem'] == 'Linux']
-        self.write(json.dumps(output))
+        clusters = mongo_helper.get_clusters()
+        self.write(json.dumps(clusters))
         
     def put(self):
-        pass
+        pname = self.get_argument('name', '')
+        if not pname:
+            return
+        proj = {"name": pname}
+        mongo_helper.add_cluster(proj)
         
     def delete(self):
-        pass
+        pname = self.get_argument('name', '')
+        if not pname:
+            return
+        mongo_helper.delete_cluster(pname)

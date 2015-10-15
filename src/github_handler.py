@@ -17,7 +17,7 @@ class GitHubHandler(tornado.web.RequestHandler):
     def post(self):
         body = json.loads(self.request.body.decode())
         repo = body['repository']['name']
-        url = body['repository']['git_url']
+        url = body['repository']['clone_url']
         user = body['repository']['owner']['name']
         date = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
         path = ROOT + '/' + repo + date
@@ -40,7 +40,7 @@ def start_build(context):
     utils.run_command(config.config['config_server'], 'cd ' + path + "/" + repo + " && " \
                       + 'sudo docker build -t vophoto-test.chinacloudapp.cn:5000/' + user + "/" + repo + ":" + str_tag + " .")
     utils.run_command(config.config['config_server'], 'sudo docker push vophoto-test.chinacloudapp.cn:5000/' + user + "/" + repo + ":" + str_tag)
-    
+    utils.run_command(config.config['config_server'], 'sudo rm -fr ' + path)
     image = {'user': user, 'name': repo, 'version': tag}
     mongo_helper.save_my_images(image)
 

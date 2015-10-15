@@ -104,4 +104,27 @@ def delete_project(project_id):
     db = conn.docker_manager
     coll = db.projects
     coll.delete_one({'project_id': project_id})
-        
+    
+def get_clusters():
+    images = []
+    db = conn.docker_manager
+    coll = db.clusters
+    unpro = coll.find()
+    for doc in unpro:
+        doc.pop('_id')
+        images.append(doc)
+    return images
+
+def add_cluster(cluster):
+    db = conn.docker_manager
+    coll = db.clusters
+    cluster['cluster_id'] = str(uuid.uuid4())
+    coll.save(cluster)
+    
+def delete_cluster(name):
+    db = conn.docker_manager
+    coll = db.clusters
+    coll.delete_one({'cluster_id': name})
+    coll.delete_one({'name': name})
+    
+    

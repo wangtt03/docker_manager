@@ -6,6 +6,7 @@ import os
 import json
 import config
 import urllib.request
+import httplib2
 
 def run_command(server, cmd):
     if config.config['debug']:
@@ -72,7 +73,7 @@ def start_container(server, name, args):
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy()) 
     client.load_system_host_keys()
     client.connect(server[0], username=server[1], password=server[2])
-    stdin, stdout, stderr = client.exec_command('sudo docker run %s %s' % (args, name))
+    stdin, stdout, stderr = client.exec_command('sudo docker -H tcp://0.0.0.0:2376 run %s %s' % (args, name))
     lines = stdout.readlines()
     client.close()
     if len(lines) > 0:
@@ -85,7 +86,7 @@ def stop_container(server, name):
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy()) 
     client.load_system_host_keys()
     client.connect(server[0], username=server[1], password=server[2])
-    stdin, stdout, stderr = client.exec_command('sudo docker rm -f %s' % name)
+    stdin, stdout, stderr = client.exec_command('sudo docker -H tcp://0.0.0.0:2376 rm -f %s' % name)
     errors = stderr.readlines()
     client.close()
     if len(errors) > 0:
@@ -174,7 +175,7 @@ def list_cluster_containers():
     f = urllib.request.urlopen(config.config['swarm_cluster_url'] + "/containers/json?all=1")
     content = f.read().decode()
     f.close()
-    return content
+    return json.loads(content)
 
 def inspect_cluster_container(cid):
     f = urllib.request.urlopen(config.config['swarm_cluster_url'] + "/containers/%s/json" % cid)
@@ -200,6 +201,10 @@ def get_cluster_images():
     f.close()
     return content
 
+def kill_cluster_container(cid):
+    h = httplib2.Http(".cache")
+    (resp_headers, content) = h.request(config.config['swarm_cluster_url'] + "/containers/%s/kill" % cid, "POST")
+    
 if __name__ == "__main__":
 #     print(start_container('vophoto-test.chinacloudapp.cn', 'vophoto-test.chinacloudapp.cn:5000/ubuntu', '-d --name ubuntu'))
 #     stop_container('vophoto-test.chinacloudapp.cn', 'ubuntu')
@@ -208,5 +213,6 @@ if __name__ == "__main__":
 #     print(list_vm('vophoto-test.chinacloudapp.cn'))
 #     scale_out_container('vophoto-test.chinacloudapp.cn', 'petstore', '-d', 1)
 #     update_load_balancer('vophoto-test.chinacloudapp.cn', 'petstore')
-    print(get_cluster_images())
+    print(('test', 'lat') in [('test', 'la2t')])         
+#     print(list_cluster_containers())
 
