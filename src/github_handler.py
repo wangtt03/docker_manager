@@ -16,6 +16,7 @@ ROOT = '/tmp'
 class GitHubHandler(tornado.web.RequestHandler):      
     def post(self):
         body = json.loads(self.request.body.decode())
+        logger.debug(body)
         repo = body['repository']['name']
         url = body['repository']['clone_url']
         user = body['repository']['owner']['name']
@@ -24,9 +25,8 @@ class GitHubHandler(tornado.web.RequestHandler):
         tag = mongo_helper.get_image_version(user, repo)
         
         context = {'path': path, 'url': url, 'repo': repo, 'user': user, 'tag': (tag + 1)}
-#         t = threading.Thread(target=start_build, args=(context,))
-#         t.start()
-        start_build(context)
+        t = threading.Thread(target=start_build, args=(context,))
+        t.start()
 
 def start_build(context):
     path = context['path']
