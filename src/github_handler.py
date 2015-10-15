@@ -24,8 +24,9 @@ class GitHubHandler(tornado.web.RequestHandler):
         tag = mongo_helper.get_image_version(user, repo)
         
         context = {'path': path, 'url': url, 'repo': repo, 'user': user, 'tag': (tag + 1)}
-        t = threading.Thread(target=start_build, args=(context,))
-        t.start()
+#         t = threading.Thread(target=start_build, args=(context,))
+#         t.start()
+        start_build(context)
 
 def start_build(context):
     path = context['path']
