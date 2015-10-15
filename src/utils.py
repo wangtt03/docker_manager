@@ -7,12 +7,14 @@ import json
 import config
 import urllib.request
 import httplib2
+import logger
 
 def run_command(server, cmd):
     if config.config['debug']:
         print(str(server) + ": " + cmd)
         return
     
+    logger.debug(str(server) + ": " + cmd)
     client = SSHClient()
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy()) 
     client.load_system_host_keys()
